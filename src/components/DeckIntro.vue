@@ -64,8 +64,8 @@ defineExpose({ focus: () => input.value?.focus() })
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 168px;
-  height: 36px;
+  width: 220px;
+  height: 38px;
   padding-inline: 12px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--line);
@@ -133,7 +133,7 @@ defineExpose({ focus: () => input.value?.focus() })
 
 @media (max-width: 719.98px) {
   .search {
-    width: 156px;
+    width: 100%;
   }
 }
 </style>

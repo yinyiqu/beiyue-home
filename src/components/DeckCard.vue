@@ -10,12 +10,8 @@ const props = defineProps({
 
 const iconOk = ref(true)
 
-/**
- * 牌心的花色，按顺序轮转。选字标准：BMP 内、各平台覆盖率高的符号，
- * 避开 ❋ ❈ ✹ 这类在 Windows 上会掉成豆腐块的低频字符。
- */
-const MOTIFS = ['♠', '♥', '♦', '♣', '★', '✦', '❖', '✧', '✿', '❀', '☘', '☾']
-const motif = computed(() => MOTIFS[props.index % MOTIFS.length])
+/** 牌心的编号：两位数字，像牌角上的点数 */
+const series = computed(() => String(props.index + 1).padStart(2, '0'))
 
 const showIcon = computed(() => Boolean(props.app.icon) && iconOk.value)
 const showEmoji = computed(() => !showIcon.value && Boolean(props.app.emoji))
@@ -55,19 +51,12 @@ const style = computed(() => {
     <span class="card__face">
       <span class="card__frame" aria-hidden="true" />
 
-      <!-- 牌心的大号花色，被上方牌压住也无所谓 -->
-      <span class="card__motif" aria-hidden="true">{{ motif }}</span>
+      <!-- 牌心的大号编号，被上方牌压住也无所谓 -->
+      <span class="card__series" aria-hidden="true">{{ series }}</span>
 
       <!-- 名称在左上、图标在右上：叠起来时唯一必须看清的一整行 -->
       <span class="card__corner">
-        <span class="card__text">
-          <span class="card__name">{{ app.name }}</span>
-          <span class="card__meta">
-            <span class="card__en">{{ app.en }}</span>
-            <span v-if="app.tag" class="card__dot" aria-hidden="true">·</span>
-            <span v-if="app.tag">{{ app.tag }}</span>
-          </span>
-        </span>
+        <span class="card__name">{{ app.name }}</span>
 
         <span class="card__icon" aria-hidden="true">
           <img

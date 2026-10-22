@@ -101,46 +101,44 @@
   transition: border-color 380ms var(--ease-out);
 }
 
-/* 牌心的大号花色：像扑克牌正中的那枚图案，居中铺满 */
-.card__motif {
+/* 牌心的编号：像扑克牌正中的那枚图案，居中铺满 */
+.card__series {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: clamp(180px, 26vw, 310px);
-  font-weight: 400;
+  font-family: var(--font-sans);
+  font-size: clamp(140px, 20vw, 240px);
+  font-weight: 700;
+  font-style: italic;
   line-height: 1;
-  color: hsl(var(--hue) 95% 82% / 0.085);
+  letter-spacing: -0.04em;
+  color: hsl(var(--hue) 92% 86% / 0.075);
   pointer-events: none;
   user-select: none;
-  /* 字形的视觉重心比行盒低，按字号往上提一点才真正居中 */
-  transform: translateY(-0.22em) rotate(-8deg);
-  transition: color 380ms var(--ease-out), transform 520ms var(--ease-spring);
+  /* 斜体的字形重心偏右下，往反方向补一点才真正居中 */
+  transform: translate(-0.04em, -0.02em) rotate(-7deg);
+  transition: color 420ms var(--ease-out), transform 620ms var(--ease-spring);
 }
-:root[data-theme='light'] .card__motif {
-  color: hsl(var(--hue) 70% 45% / 0.1);
+:root[data-theme='light'] .card__series {
+  color: hsl(var(--hue) 62% 34% / 0.09);
 }
 
-/* 信息区横贯牌顶：名称靠左，图标靠右，叠放时这一整行必须看清 */
+/* 信息区横贯牌顶：名称靠左，图标靠右，叠放时这一整行必须看清。
+   高度正好等于「露出的那一条」，内容在带内垂直居中。 */
 .card__corner {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 2;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 14px;
   width: 100%;
+  height: 19%;
   /* 左侧让出竖排地址的车道，避免和名称撞在一起 */
-  padding: 26px 26px 20px 44px;
-}
-
-.card__text {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
+  padding: 0 26px 0 44px;
 }
 
 .card__name {
@@ -164,26 +162,6 @@
 :root[data-theme='light'] .card__name::first-letter {
   color: hsl(var(--hue) 72% 38%);
   text-shadow: none;
-}
-
-.card__meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: hsl(var(--hue) 62% 88% / 0.5);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-:root[data-theme='light'] .card__meta {
-  color: hsl(var(--hue) 45% 40% / 0.6);
-}
-.card__dot {
-  opacity: 0.6;
 }
 
 .card__icon {
@@ -250,8 +228,9 @@
   }
 
   .card__corner {
+    height: 30%;
     gap: 16px;
-    padding: 30px 30px 24px 50px;
+    padding: 0 30px 0 50px;
   }
 
   .card__icon {
@@ -274,10 +253,6 @@
 
   .card__name::first-letter {
     font-size: 1.4em;
-  }
-
-  .card__meta {
-    font-size: 0.6rem;
   }
 
   .card__spine {
@@ -310,9 +285,9 @@
     transform: scale(1.05) rotate(-2deg);
   }
 
-  .card:hover .card__motif {
-    color: hsl(var(--hue) 95% 84% / 0.14);
-    transform: translateY(-0.22em) rotate(0deg) scale(1.03);
+  .card:hover .card__series {
+    color: hsl(var(--hue) 92% 88% / 0.12);
+    transform: translate(-0.04em, -0.02em) rotate(0deg) scale(1.02);
   }
 
   :root[data-theme='light'] .card:hover .card__face {
@@ -320,8 +295,8 @@
       0 12px 22px -16px rgba(20, 20, 32, 0.22), 0 0 0 1px hsl(var(--hue) 70% 60% / 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
-  :root[data-theme='light'] .card:hover .card__motif {
-    color: hsl(var(--hue) 70% 45% / 0.15);
+  :root[data-theme='light'] .card:hover .card__series {
+    color: hsl(var(--hue) 62% 34% / 0.13);
   }
 
   .card:active .card__face {
@@ -373,7 +348,7 @@
 @media (prefers-reduced-motion: reduce) {
   .card__face,
   .card__icon,
-  .card__motif,
+  .card__series,
   .card__face::before {
     animation: none !important;
     transition: none !important;
