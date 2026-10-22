@@ -101,27 +101,24 @@
   transition: border-color 380ms var(--ease-out);
 }
 
-/* 牌心的大号序号：像扑克牌正中的花色，居中铺满，
-   被上方牌压住也无所谓，整张露出时才是视觉重心 */
-.card__series {
+/* 牌心的大号花色：像扑克牌正中的那枚图案，居中铺满 */
+.card__motif {
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  font-family: var(--font-sans);
-  font-size: clamp(170px, 27vw, 330px);
-  font-weight: 700;
-  font-style: italic;
-  line-height: 0.8;
-  letter-spacing: -0.07em;
-  color: hsl(var(--hue) 90% 86% / 0.07);
+  font-size: clamp(180px, 26vw, 310px);
+  font-weight: 400;
+  line-height: 1;
+  color: hsl(var(--hue) 95% 82% / 0.085);
   pointer-events: none;
   user-select: none;
-  transform: rotate(-6deg);
-  transition: color 420ms var(--ease-out), transform 620ms var(--ease-spring);
+  /* 字形的视觉重心比行盒低，按字号往上提一点才真正居中 */
+  transform: translateY(-0.22em) rotate(-8deg);
+  transition: color 380ms var(--ease-out), transform 520ms var(--ease-spring);
 }
-:root[data-theme='light'] .card__series {
-  color: hsl(var(--hue) 62% 34% / 0.09);
+:root[data-theme='light'] .card__motif {
+  color: hsl(var(--hue) 70% 45% / 0.1);
 }
 
 /* 信息区横贯牌顶：名称靠左，图标靠右，叠放时这一整行必须看清 */
@@ -224,28 +221,6 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
-/* 一句话简介：被压住时看不见，整张露出时才读到 */
-.card__desc {
-  position: absolute;
-  /* 落在露出带之下：折叠时整段被压住，不会露出半行字 */
-  top: 118px;
-  left: 44px;
-  right: 30px;
-  z-index: 2;
-  max-width: 44ch;
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: hsl(var(--hue) 60% 90% / 0.68);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-:root[data-theme='light'] .card__desc {
-  color: hsl(var(--hue) 40% 32% / 0.74);
-}
-
 /* 左缘竖排地址：像防伪码一样沿边缘排布，超出卡面自然渐隐 */
 .card__spine {
   position: absolute;
@@ -305,12 +280,6 @@
     font-size: 0.6rem;
   }
 
-  .card__desc {
-    left: 50px;
-    right: 34px;
-    font-size: 0.9rem;
-  }
-
   .card__spine {
     top: 26px;
     left: 18px;
@@ -341,9 +310,9 @@
     transform: scale(1.05) rotate(-2deg);
   }
 
-  .card:hover .card__series {
-    color: hsl(var(--hue) 90% 86% / 0.11);
-    transform: rotate(0deg) scale(1.02);
+  .card:hover .card__motif {
+    color: hsl(var(--hue) 95% 84% / 0.14);
+    transform: translateY(-0.22em) rotate(0deg) scale(1.03);
   }
 
   :root[data-theme='light'] .card:hover .card__face {
@@ -351,8 +320,8 @@
       0 12px 22px -16px rgba(20, 20, 32, 0.22), 0 0 0 1px hsl(var(--hue) 70% 60% / 0.35),
       inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
-  :root[data-theme='light'] .card:hover .card__series {
-    color: hsl(var(--hue) 62% 34% / 0.13);
+  :root[data-theme='light'] .card:hover .card__motif {
+    color: hsl(var(--hue) 70% 45% / 0.15);
   }
 
   .card:active .card__face {
@@ -404,7 +373,7 @@
 @media (prefers-reduced-motion: reduce) {
   .card__face,
   .card__icon,
-  .card__series,
+  .card__motif,
   .card__face::before {
     animation: none !important;
     transition: none !important;

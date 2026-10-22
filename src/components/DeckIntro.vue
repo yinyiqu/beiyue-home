@@ -31,7 +31,6 @@ defineExpose({ focus: () => input.value?.focus() })
         ref="input"
         type="search"
         :value="props.modelValue"
-        placeholder="找一张牌"
         autocomplete="off"
         spellcheck="false"
         @input="emit('update:modelValue', $event.target.value)"
@@ -52,11 +51,11 @@ defineExpose({ focus: () => input.value?.focus() })
 <style scoped>
 .bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 100%;
   max-width: 860px;
   margin-inline: auto;
-  /* 与 deck-root 完全一致的内边距，搜索框右缘正好对齐卡片右缘 */
+  /* 与 deck-root 完全一致的内边距，搜索框左缘与容器对齐 */
   padding: 0 clamp(16px, 4vw, 32px) clamp(16px, 2.2vw, 24px);
 }
 
@@ -65,8 +64,8 @@ defineExpose({ focus: () => input.value?.focus() })
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 220px;
-  height: 38px;
+  width: 168px;
+  height: 36px;
   padding-inline: 12px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--line);
@@ -133,11 +132,8 @@ defineExpose({ focus: () => input.value?.focus() })
 }
 
 @media (max-width: 719.98px) {
-  .bar {
-    justify-content: stretch;
-  }
   .search {
-    width: 100%;
+    width: 156px;
   }
 }
 </style>
