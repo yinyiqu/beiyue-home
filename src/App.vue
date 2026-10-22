@@ -8,31 +8,16 @@ import SiteFooter from './components/SiteFooter.vue'
 import ToastHost from './components/ToastHost.vue'
 import { apps as sourceApps } from './data/site.js'
 
-/** 当前牌序：洗牌只动这份数组，原始数据保持不动 */
-const deck = ref([...sourceApps])
 const query = ref('')
-const deal = ref(0)
 const intro = ref(null)
 
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()
-  if (!q) return deck.value
-  return deck.value.filter((app) =>
+  if (!q) return sourceApps
+  return sourceApps.filter((app) =>
     [app.name, app.en, app.tag, app.desc].join(' ').toLowerCase().includes(q)
   )
 })
-
-function shuffle() {
-  const next = [...deck.value]
-  for (let i = next.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[next[i], next[j]] = [next[j], next[i]]
-  }
-  deck.value = next
-  // key 变化 → 整叠牌重新发一次，动画重播
-  deal.value += 1
-  query.value = ''
-}
 
 /** 全局快捷键：/ 聚焦搜索，Esc 清空 */
 function onKeydown(event) {
@@ -62,19 +47,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
   <main id="top" class="main">
     <div class="shell">
-      <DeckIntro
-        ref="intro"
-        v-model="query"
-        :count="filtered.length"
-        :total="deck.length"
-        @shuffle="shuffle"
-      />
-      <Deck
-        id="deck"
-        :apps="filtered"
-        :deal="deal"
-        @clear="query = ''"
-      />
+      <DeckIntro ref="intro" v-model="query" />
+      <Deck id="deck" :apps="filtered" @clear="query = ''" />
     </div>
   </main>
 
@@ -100,12 +74,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   position: relative;
   z-index: var(--z-content);
   padding-top: 92px;
+  padding-bottom: clamp(24px, 5vw, 48px);
 }
 
 .shell {
-  max-width: 1120px;
-  margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 40px);
+  /* 宽度由牌堆自己控制（竖屏 520 / 横版 860），这里只做打包 */
+  width: 100%;
 }
 
 @media (min-width: 760px) {

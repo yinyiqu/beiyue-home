@@ -1,13 +1,12 @@
 <script setup>
 import { ref } from 'vue'
-import { site } from '../data/site.js'
 
 const props = defineProps({
   count: { type: Number, default: 0 },
   total: { type: Number, default: 0 },
   modelValue: { type: String, default: '' }
 })
-const emit = defineEmits(['update:modelValue', 'shuffle'])
+const emit = defineEmits(['update:modelValue'])
 
 const input = ref(null)
 const focused = ref(false)
@@ -21,89 +20,44 @@ defineExpose({ focus: () => input.value?.focus() })
 </script>
 
 <template>
-  <section class="intro" aria-labelledby="intro-title">
-    <h1 id="intro-title" class="visually-hidden">{{ site.name }} · 牌堆</h1>
-
-    <p class="intro__hint">
-      {{ site.hint }}
-      <span class="intro__count">{{ count }}<span v-if="count !== total"> / {{ total }}</span> 张</span>
-    </p>
-
-    <div class="intro__tools">
-      <label class="search" :class="{ 'is-focused': focused }">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m16.5 16.5 4 4" stroke-linecap="round" />
+  <div class="bar">
+    <label class="search" :class="{ 'is-focused': focused }">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m16.5 16.5 4 4" stroke-linecap="round" />
+      </svg>
+      <span class="visually-hidden">搜索卡片</span>
+      <input
+        ref="input"
+        type="search"
+        :value="props.modelValue"
+        placeholder="找一张牌"
+        autocomplete="off"
+        spellcheck="false"
+        @input="emit('update:modelValue', $event.target.value)"
+        @focus="focused = true"
+        @blur="focused = false"
+        @keydown.esc.prevent="clear"
+      />
+      <button v-if="modelValue" class="search__clear" type="button" aria-label="清空搜索" @click="clear">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
         </svg>
-        <span class="visually-hidden">搜索卡片</span>
-        <input
-          ref="input"
-          type="search"
-          :value="props.modelValue"
-          placeholder="找一张牌"
-          autocomplete="off"
-          spellcheck="false"
-          @input="emit('update:modelValue', $event.target.value)"
-          @focus="focused = true"
-          @blur="focused = false"
-          @keydown.esc.prevent="clear"
-        />
-        <button v-if="modelValue" class="search__clear" type="button" aria-label="清空搜索" @click="clear">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18" />
-          </svg>
-        </button>
-        <kbd v-else class="search__kbd" aria-hidden="true">/</kbd>
-      </label>
-
-      <button class="shuffle" type="button" @click="emit('shuffle')">
-        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M4 7h3.5l9 10H20" />
-          <path d="M4 17h3.5l9-10H20" />
-          <path d="m17.5 4.5 2.5 2.5-2.5 2.5M17.5 14.5 20 17l-2.5 2.5" />
-        </svg>
-        <span class="shuffle__label">洗牌</span>
       </button>
-    </div>
-  </section>
+      <kbd v-else class="search__kbd" aria-hidden="true">/</kbd>
+    </label>
+  </div>
 </template>
 
 <style scoped>
-.intro {
+.bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding-bottom: clamp(18px, 2.4vw, 26px);
-}
-
-.intro__hint {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  min-width: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.01em;
-  color: var(--text-3);
-}
-
-.intro__count {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  letter-spacing: 0.08em;
-  padding: 3px 8px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--line);
-  color: var(--text-2);
-  white-space: nowrap;
-}
-
-.intro__tools {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 860px;
+  margin-inline: auto;
+  /* 与 deck-root 完全一致的内边距，搜索框右缘正好对齐卡片右缘 */
+  padding: 0 clamp(16px, 4vw, 32px) clamp(16px, 2.2vw, 24px);
 }
 
 .search {
@@ -111,7 +65,7 @@ defineExpose({ focus: () => input.value?.focus() })
   display: flex;
   align-items: center;
   gap: 8px;
-  width: 208px;
+  width: 220px;
   height: 38px;
   padding-inline: 12px;
   border-radius: var(--radius-pill);
@@ -172,58 +126,18 @@ defineExpose({ focus: () => input.value?.focus() })
   background: var(--line);
 }
 
-.shuffle {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  height: 38px;
-  padding-inline: 15px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text-2);
-  font-size: 0.8rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: transform var(--dur-fast) var(--ease-spring), color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-}
-.shuffle:hover {
-  transform: translateY(-1px);
-  color: var(--text);
-  border-color: var(--line-strong);
-}
-.shuffle:active {
-  transform: translateY(0) scale(0.97);
-}
-.shuffle svg {
-  transition: transform var(--dur-base) var(--ease-spring);
-}
-.shuffle:hover svg {
-  transform: rotate(18deg);
+@media (min-width: 720px) {
+  .bar {
+    padding-inline: 24px;
+  }
 }
 
-@media (max-width: 760px) {
-  .intro {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 14px;
-  }
-  .intro__tools {
-    justify-content: space-between;
+@media (max-width: 719.98px) {
+  .bar {
+    justify-content: stretch;
   }
   .search {
-    flex: 1 1 auto;
-    width: auto;
-  }
-}
-
-@media (max-width: 380px) {
-  .shuffle {
-    padding-inline: 12px;
-  }
-  .shuffle__label {
-    display: none;
+    width: 100%;
   }
 }
 </style>
