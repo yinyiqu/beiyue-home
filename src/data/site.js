@@ -17,7 +17,7 @@ export const site = {
   name: 'Beiyue',
   sub: 'home',
   title: 'Beiyue home',
-  hint: '悬停抽一张 · 点击打开',
+  hint: '上下滑动翻牌 · 点开就用',
   author: 'Beiyue',
   since: 2026,
   github: '',

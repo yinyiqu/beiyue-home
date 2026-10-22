@@ -124,7 +124,6 @@ function onOpen(event) {
             <span v-if="app.tag" class="card__dot" aria-hidden="true">·</span>
             <span v-if="app.tag">{{ app.tag }}</span>
           </span>
-          <span v-if="app.desc" class="card__desc">{{ app.desc }}</span>
         </span>
 
         <span class="card__icon" aria-hidden="true">
@@ -142,10 +141,12 @@ function onOpen(event) {
         </span>
       </span>
 
+      <span v-if="app.desc" class="card__desc">{{ app.desc }}</span>
+
       <span class="card__spine" aria-hidden="true">{{ address }}</span>
 
-      <span v-if="isLast" class="card__cta" aria-hidden="true">
-        <span>打开项目</span>
+      <span class="card__cta" aria-hidden="true">
+        <span>{{ isLast ? '打开项目' : '打开' }}</span>
         <span class="card__cta-arrow">↗</span>
       </span>
 
