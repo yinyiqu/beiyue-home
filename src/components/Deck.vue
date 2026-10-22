@@ -89,13 +89,14 @@ function frame() {
     } else {
       // 当前这张被翻走：向上飞出、淡出，把位置让给下一张
       const t = Math.min(1, -offset)
-      const ease = t * t * (3 - 2 * t)
+      // 前段就发力：一滚就走，别停在半路挡住下面那张的卡头
+      const ease = 1 - Math.pow(1 - t, 3)
       transform =
         `translate3d(0, ${shift.toFixed(2)}px, 0)` +
-        ` translate3d(0, ${(-ease * 172).toFixed(2)}%, 0)` +
+        ` translate3d(0, ${(-ease * 165).toFixed(2)}%, 0)` +
         ` rotate(${(-ease * 3).toFixed(2)}deg) scale(${(1 + ease * 0.01).toFixed(4)})`
       // 整张不透明地抽走，只在最后一段消失：半透明会让上下两张的文字糊在一起
-      opacity = ease > 0.82 ? clamp(1 - (ease - 0.82) * 4.6, 0, 1) : 1
+      opacity = ease > 0.8 ? clamp(1 - (ease - 0.8) * 6.5, 0, 1) : 1
       z = 50
     }
 
@@ -234,6 +235,8 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   padding-inline: 18px;
+  /* 抽走的牌滑到边上就被裁掉，不会跑到顶栏后面晃 */
+  overflow: hidden;
 }
 
 .deck__item {
