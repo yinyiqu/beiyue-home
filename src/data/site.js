@@ -56,6 +56,8 @@ const SAMPLES = [
     desc: '拖一张卡带进去，就能在浏览器里玩 GB / GBC / GBA。',
     url: `${import.meta.env.BASE_URL}GameBoyLive/`,
     emoji: '🕹️',
+    /* 用模拟器自己的图标，和参考站一致 */
+    icon: `${import.meta.env.BASE_URL}icons/gameboy.svg`,
     /* 与参考站 GameBoy 那张牌一致：青绿 */
     hue: 172
   }
