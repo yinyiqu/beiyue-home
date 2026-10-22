@@ -14,6 +14,7 @@ const emit = defineEmits(['clear'])
         v-for="(app, i) in apps"
         :key="app.id"
         class="deck__item"
+        :class="{ 'deck__item--right': i % 2 === 0 }"
         :style="{ '--i': i }"
       >
         <DeckCard :app="app" :index="i" :is-last="i === apps.length - 1" />
@@ -101,9 +102,26 @@ const emit = defineEmits(['clear'])
     --card-ratio-h: 9;
   }
 
+  /* 卡宽占容器的 5/6，剩下 1/6 就是左右错位的余量：
+     偶数张靠右、奇数张贴左，形成之字形叠放 */
   .deck {
-    /* 左 1/6 空档，右 5/6 卡宽（百分比 padding 按包含块宽度解析） */
-    padding-left: 16.6667%;
+    padding-inline: 0;
+  }
+
+  .deck__item {
+    width: 83.3333%;
+  }
+
+  /* margin-left:auto 把偶数张推到最右，奇数张留在最左 */
+  .deck__item--right {
+    margin-left: auto;
+  }
+
+  /* 鼠标停在某张牌上时，把它提到最上层：滑到正中 + 完整露出，
+     这才像从一叠牌里抽出来看 */
+  .deck__item:hover,
+  .deck__item:focus-within {
+    z-index: 9;
   }
 }
 </style>

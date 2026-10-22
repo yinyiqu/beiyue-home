@@ -9,9 +9,8 @@
   --ratio-h: var(--card-ratio-h, 16);
   /* 露出比例：只露角落那一条 */
   --band: 0.19;
-  /* 抽出量：相对牌面自身宽度，横向抽出 20% 卡宽，
-     正好填满牌堆左侧预留的那条空档 */
-  --lift: -20%;
+  /* 悬停时滑向正中的位移量：容器两侧各留 1/12，正好是卡宽的 10% */
+  --fan-hover: 10%;
 
   position: relative;
   display: block;
@@ -53,7 +52,7 @@
     );
   box-shadow: 0 22px 40px -26px hsl(var(--hue) 85% 25% / 0.9),
     0 10px 20px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 hsl(var(--hue) 90% 85% / 0.14);
-  transform: translate3d(var(--fan, 0px), 0, 0) rotate(var(--tilt, 0deg));
+  transform: rotate(var(--tilt, 0deg));
   transform-origin: 50% 92%;
   transition: transform 480ms var(--ease-spring), box-shadow 380ms var(--ease-out),
     border-color 380ms var(--ease-out);
@@ -227,6 +226,11 @@
     --band: 0.3;
   }
 
+  /* 靠右的那些牌，悬停时往左滑到正中 */
+  .deck__item--right .card {
+    --fan-hover: -10%;
+  }
+
   .card__corner {
     height: 30%;
     gap: 16px;
@@ -269,7 +273,8 @@
 @media (hover: hover) and (min-width: 720px) {
   .card:hover .card__face,
   .card:focus-visible .card__face {
-    transform: translate3d(var(--lift), 0, 0) rotate(0deg);
+    /* 滑到正中并轻轻抬起，像从一叠牌里被抽出来看清楚 */
+    transform: translate3d(var(--fan-hover), -10px, 0) rotate(0deg) scale(1.012);
     border-color: hsl(var(--hue) 85% 72% / 0.5);
     box-shadow: 0 26px 46px -24px hsl(var(--hue) 85% 28% / 0.95),
       0 12px 22px -14px rgba(0, 0, 0, 0.5), 0 0 0 1px hsl(var(--hue) 85% 72% / 0.2),
@@ -300,7 +305,7 @@
   }
 
   .card:active .card__face {
-    transform: translate3d(calc(var(--lift) * 0.55), 0, 0) rotate(0deg);
+    transform: translate3d(var(--fan-hover), -4px, 0) rotate(0deg) scale(1.004);
   }
 
   .card:focus-visible .card__face {

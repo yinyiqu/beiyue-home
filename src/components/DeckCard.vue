@@ -34,8 +34,7 @@ const style = computed(() => {
   return {
     '--hue': props.app.hue,
     '--i': props.index,
-    '--tilt': `${(stagger * 0.3).toFixed(2)}deg`,
-    '--fan': `${(stagger * 1.5).toFixed(2)}px`
+    '--tilt': `${(stagger * 0.3).toFixed(2)}deg`
   }
 })
 </script>
