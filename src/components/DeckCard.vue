@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { useToast } from '../composables/useToast.js'
 
 const props = defineProps({
@@ -9,6 +9,13 @@ const props = defineProps({
 
 const { show } = useToast()
 const iconOk = ref(true)
+
+/** 触屏按下时的手感：先抬起高亮，再跳转，别让动画一闪而过 */
+const pressed = ref(false)
+let pointerType = 'mouse'
+let releaseTimer = 0
+let navTimer = 0
+let navigating = false
 
 const sample = computed(() => !props.app.url)
 const series = computed(() => String(props.index + 1).padStart(2, '0'))
@@ -32,6 +39,32 @@ const style = computed(() => ({
   '--tilt': `${props.index % 2 === 0 ? -0.35 : 0.35}deg`
 }))
 
+function onPointerDown(event) {
+  pointerType = event.pointerType || 'mouse'
+  if (pointerType === 'mouse') return
+  clearTimeout(releaseTimer)
+  pressed.value = true
+}
+
+function onPointerUp() {
+  if (pointerType === 'mouse') return
+  clearTimeout(releaseTimer)
+  releaseTimer = window.setTimeout(() => {
+    pressed.value = false
+  }, 220)
+}
+
+function onPointerCancel() {
+  if (navigating) return
+  clearTimeout(releaseTimer)
+  pressed.value = false
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(releaseTimer)
+  clearTimeout(navTimer)
+})
+
 /** 指针位置换算成卡面百分比，驱动高光跟着手走 */
 function onPointerMove(event) {
   const face = event.currentTarget.querySelector('.card__face')
@@ -44,7 +77,20 @@ function onPointerMove(event) {
 function onOpen(event) {
   if (sample.value) {
     event.preventDefault()
+    pressed.value = false
     show(`示例牌 · 在 src/data/site.js 里给「${props.app.name}」填上 url`)
+    return
+  }
+
+  // 触屏：先让「抽牌」动完再跳转
+  if (pointerType === 'touch' || pointerType === 'pen') {
+    event.preventDefault()
+    navigating = true
+    pressed.value = true
+    clearTimeout(navTimer)
+    navTimer = window.setTimeout(() => {
+      window.location.href = props.app.url
+    }, 190)
   }
 }
 </script>
@@ -52,11 +98,16 @@ function onOpen(event) {
 <template>
   <a
     class="card"
+    :class="{ 'is-pressed': pressed }"
     :href="app.url || '#'"
     :style="style"
     :aria-label="`${app.name}${app.tag ? '，' + app.tag : ''}${app.desc ? '，' + app.desc : ''}`"
     @click="onOpen"
     @pointermove="onPointerMove"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
+    @pointercancel="onPointerCancel"
+    @pointerleave="onPointerCancel"
   >
     <span class="card__face">
       <span class="card__frame" aria-hidden="true" />

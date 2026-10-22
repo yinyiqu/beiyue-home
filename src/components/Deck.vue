@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import DeckCard from './DeckCard.vue'
 import ColophonCard from './ColophonCard.vue'
 
-defineProps({
+const props = defineProps({
   apps: { type: Array, default: () => [] },
   deal: { type: Number, default: 0 },
   showColophon: { type: Boolean, default: true }
@@ -11,6 +11,36 @@ defineProps({
 const emit = defineEmits(['clear'])
 
 const deckEl = ref(null)
+let observer = null
+
+/** 牌滚进视口时再发出来：移动端也能看到逐张落下的动效 */
+function setupReveal() {
+  observer?.disconnect()
+  const items = Array.from(deckEl.value?.querySelectorAll('.deck__item') || [])
+  if (!items.length) return
+
+  if (!('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    items.forEach((el) => el.classList.add('is-in'))
+    return
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        entry.target.classList.add('is-in')
+        observer.unobserve(entry.target)
+      })
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -4% 0px' }
+  )
+  items.forEach((el) => observer.observe(el))
+}
+
+onMounted(() => nextTick(setupReveal))
+watch(() => props.apps.map((a) => a.id).join('|') + '#' + props.deal, () => nextTick(setupReveal))
+onBeforeUnmount(() => observer?.disconnect())
 
 /** ↑↓ / ←→ 在牌堆里移动焦点，Enter 由链接自己处理 */
 function moveFocus(step) {
@@ -89,6 +119,16 @@ function onKeydown(event) {
 .deck__item {
   position: relative;
   z-index: calc(var(--i, 0) + 1);
+  /* 滚进视口时逐张落下 */
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 520ms var(--ease-out), transform 640ms var(--ease-spring);
+  transition-delay: calc(min(var(--i, 0), 4) * 55ms);
+}
+
+.deck__item.is-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .empty {
