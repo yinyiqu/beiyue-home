@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import DeckCard from './DeckCard.vue'
 
 defineProps({
@@ -9,6 +9,35 @@ defineProps({
 const emit = defineEmits(['clear'])
 
 const deckEl = ref(null)
+let raf = 0
+
+/** 滚动时只让「当前那张」突出：其余压暗 */
+function updateActive() {
+  const items = Array.from(deckEl.value?.querySelectorAll('.deck__item') || [])
+  if (!items.length) return
+  // 当前突出的，是最上面那张「已经升起」的牌：它的顶边一进入视口就算数
+  const vh = window.innerHeight
+  let active = 0
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].getBoundingClientRect().top < vh * 0.9) active = i
+  }
+  items.forEach((el, i) => el.classList.toggle('is-active', i === active))
+  raf = 0
+}
+function onScroll() {
+  if (!raf) raf = requestAnimationFrame(updateActive)
+}
+
+onMounted(() => {
+  updateActive()
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onScroll)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('resize', onScroll)
+  if (raf) cancelAnimationFrame(raf)
+})
 
 /** ↑↓ / ←→ 在牌堆里移动焦点，Enter 由链接自己处理 */
 function moveFocus(step) {
@@ -63,39 +92,24 @@ function onKeydown(event) {
 <style scoped>
 .deck-root {
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
   margin-inline: auto;
   padding-inline: clamp(18px, 5vw, 28px);
-  /* 卡片比例与「露出比例」统一在这里定义 */
-  --card-rw: 9;
-  --card-rh: 16;
-  --band: 0.2;
+  --card-rw: 3;
+  --card-rh: 4;
 }
 
 .deck {
   display: flex;
   flex-direction: column;
-  min-width: 288px;
 }
 
-/* 后面的牌层级更高，压住前一张的下沿，只留出顶部一条 */
+/* 上下滑动时，牌一张接一张地压上来，只在顶部留一窄条 */
 .deck__item {
-  position: relative;
+  position: sticky;
+  top: calc(88px + var(--i, 0) * 20px);
   z-index: calc(var(--i, 0) + 1);
-  /* 打牌：每张从下方升起来，压在前一张上 */
-  animation: dealUp 620ms var(--ease-spring) backwards;
-  animation-delay: calc(var(--i, 0) * 150ms);
-}
-
-@keyframes dealUp {
-  from {
-    opacity: 0;
-    transform: translateY(72px) rotate(-1.4deg) scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg) scale(1);
-  }
+  margin-bottom: 48vh;
 }
 
 .empty {
@@ -135,39 +149,16 @@ function onKeydown(event) {
   background: var(--surface);
 }
 
-/* ── 宽屏：16:9 横牌 ─────────────────────────────────────
-   左侧留 15% 作为「抽出车道」，卡片宽 85%；
-   抽出量 17.65% 卡宽 = 15% 容器宽，正好填满车道，不越界。 */
 @media (min-width: 900px) {
-  .deck__item {
-    animation-name: dealUpWide;
-    animation-duration: 560ms;
-    animation-delay: calc(var(--i, 0) * 90ms);
-  }
-
-  @keyframes dealUpWide {
-    from {
-      opacity: 0;
-      transform: translateY(22px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   .deck-root {
+    max-width: 720px;
+    padding-inline: 24px;
     --card-rw: 16;
     --card-rh: 9;
-    --band: 0.3;
-    max-width: 1120px;
-    padding-inline: clamp(24px, 4vw, 40px);
   }
-  .deck {
-    /* 左右各留 8% 作为抽出车道：牌堆整体居中，
-       悬停时向左抽出 8% 容器宽（= 9.52% 卡宽），正好填满车道 */
-    padding-inline: 8%;
-    min-width: 620px;
+  .deck__item {
+    top: calc(112px + var(--i, 0) * 26px);
+    margin-bottom: 44vh;
   }
 }
 </style>
