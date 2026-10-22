@@ -27,7 +27,7 @@
   padding-top: calc(100% * var(--ratio-h) / var(--ratio-w));
 }
 
-@media (hover: hover) and (pointer: fine) and (min-width: 720px) {
+@media (hover: hover) and (min-width: 720px) {
   .card:hover .card__face,
   .card:focus-visible .card__face {
     will-change: transform;
@@ -266,7 +266,7 @@
 /* ── 悬停 / 聚焦：整张向左抽出，填满预留的车道 ─────────────
    纵向位置完全不动，层级也不变，所以抽出后依然被下一张压住，
    绝不会遮住任何兄弟牌的角落信息。只在横版 + 精确指针下生效。 */
-@media (hover: hover) and (pointer: fine) and (min-width: 720px) {
+@media (hover: hover) and (min-width: 720px) {
   .card:hover .card__face,
   .card:focus-visible .card__face {
     transform: translate3d(var(--lift), 0, 0) rotate(0deg);
@@ -317,7 +317,7 @@
 }
 
 /* ── 竖屏 / 窄窗：没有抽出的车道，悬停只轻轻上浮 ─────────── */
-@media (hover: hover) and (pointer: fine) and (max-width: 719.98px) {
+@media (hover: hover) and (max-width: 719.98px) {
   .card:hover .card__face,
   .card:focus-visible .card__face {
     transform: translate3d(var(--fan, 0px), -14px, 0) rotate(var(--tilt, 0deg));
