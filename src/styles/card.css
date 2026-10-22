@@ -342,7 +342,7 @@
   filter: brightness(0.88) saturate(0.9);
 }
 
-/* ── 竖屏：比例收一点，序号小一点 ──────────────────────── */
+/* ── 竖屏：字号收一点 ──────────────────────────────────── */
 @media (max-width: 899.98px) {
   .card__corner {
     padding: 22px 18px 16px 40px;
@@ -352,6 +352,9 @@
   }
   .card__series {
     font-size: 150px;
+  }
+  .card__desc {
+    font-size: 0.8rem;
   }
 }
 
