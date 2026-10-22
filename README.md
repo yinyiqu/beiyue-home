@@ -28,9 +28,8 @@ npm run preview  # 本地预览构建结果
 ```js
 export const site = {
   name: 'yuetool',               // 品牌名，导航与页脚
-  tagline: '把做过的小东西，',    // 首页大标题第一行
-  taglineStrong: '收成一叠牌。',  // 第二行（渐变字）
-  github: 'https://github.com/你的用户名',
+  hint: '悬停抽一张 · 点击打开',  // 工具栏左侧的小字
+  github: '',                    // 留空则不显示 GitHub 入口
   email: '',                     // 留空则不显示邮件入口
   about: { /* 最后那张说明牌的内容 */ }
 }
@@ -122,7 +121,7 @@ yuetool-deck/
 ├─ src/
 │  ├─ components/
 │  │  ├─ NavBar.vue          顶栏：双牌字标、GitHub、主题开关
-│  │  ├─ DeckIntro.vue       标题、搜索、洗牌
+│  │  ├─ DeckIntro.vue       工具条：提示、搜索、洗牌
 │  │  ├─ Deck.vue            牌堆容器、键盘导航、空状态
 │  │  ├─ DeckCard.vue        单张牌
 │  │  ├─ ColophonCard.vue    最后一张说明牌

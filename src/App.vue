@@ -100,7 +100,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 .main {
   position: relative;
   z-index: var(--z-content);
-  padding-top: 104px;
+  padding-top: 92px;
 }
 
 .shell {
@@ -111,7 +111,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
 @media (min-width: 760px) {
   .main {
-    padding-top: 124px;
+    padding-top: 108px;
   }
 }
 </style>

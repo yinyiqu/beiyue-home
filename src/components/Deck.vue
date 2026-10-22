@@ -136,11 +136,13 @@ function onKeydown(event) {
     --card-rw: 16;
     --card-rh: 9;
     --band: 0.3;
-    max-width: 1000px;
+    max-width: 1120px;
     padding-inline: clamp(24px, 4vw, 40px);
   }
   .deck {
-    padding-left: 15%;
+    /* 左右各留 8% 作为抽出车道：牌堆整体居中，
+       悬停时向左抽出 8% 容器宽（= 9.52% 卡宽），正好填满车道 */
+    padding-inline: 8%;
     min-width: 620px;
   }
 }

@@ -16,9 +16,6 @@
 export const site = {
   name: 'yuetool',
   title: 'yuetool · 牌堆',
-  tagline: '把做过的小东西，',
-  taglineStrong: '收成一叠牌。',
-  eyebrow: 'A SMALL DECK OF THINGS I MADE',
   hint: '悬停抽一张 · 点击打开',
   author: 'yuetool',
   since: 2026,
@@ -42,13 +39,22 @@ const HUES = [32, 202, 344, 164, 268, 12, 190, 96, 222, 316, 48, 148]
 /** 示例牌：把 url 换成你自己的项目地址即可 */
 const SAMPLES = [
   {
-    id: 'beii-image-host',
-    name: 'Beii 图床',
+    id: 'imghub-image-host',
+    name: 'Imghub 图床',
     en: 'Image Host',
     tag: '工具',
     desc: '拖进图片，马上拿到一个能直接用的链接。',
     url: 'https://beii.cc.cd',
     emoji: '🖼️'
+  },
+  {
+    id: 'danmaku',
+    name: '弹幕',
+    en: 'Danmaku',
+    tag: '趣味',
+    desc: '打开就能发，屏幕上飘过的都是别人的碎碎念。',
+    url: 'https://yue.dpdns.org',
+    emoji: '🎬'
   },
   {
     id: 'text-alchemy',

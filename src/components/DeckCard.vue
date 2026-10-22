@@ -32,6 +32,15 @@ const style = computed(() => ({
   '--tilt': `${props.index % 2 === 0 ? -0.35 : 0.35}deg`
 }))
 
+/** 指针位置换算成卡面百分比，驱动高光跟着手走 */
+function onPointerMove(event) {
+  const face = event.currentTarget.querySelector('.card__face')
+  if (!face) return
+  const rect = face.getBoundingClientRect()
+  face.style.setProperty('--mx', `${((event.clientX - rect.left) / rect.width) * 100}%`)
+  face.style.setProperty('--my', `${((event.clientY - rect.top) / rect.height) * 100}%`)
+}
+
 function onOpen(event) {
   if (sample.value) {
     event.preventDefault()
@@ -47,6 +56,7 @@ function onOpen(event) {
     :style="style"
     :aria-label="`${app.name}${app.tag ? '，' + app.tag : ''}${app.desc ? '，' + app.desc : ''}`"
     @click="onOpen"
+    @pointermove="onPointerMove"
   >
     <span class="card__face">
       <span class="card__frame" aria-hidden="true" />

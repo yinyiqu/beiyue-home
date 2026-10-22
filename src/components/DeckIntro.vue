@@ -22,17 +22,12 @@ defineExpose({ focus: () => input.value?.focus() })
 
 <template>
   <section class="intro" aria-labelledby="intro-title">
-    <div class="intro__copy">
-      <p class="intro__eyebrow">{{ site.eyebrow }}</p>
-      <h1 id="intro-title" class="intro__title">
-        {{ site.tagline }}<br />
-        <em>{{ site.taglineStrong }}</em>
-      </h1>
-      <p class="intro__hint">
-        {{ site.hint }}
-        <span class="intro__count">{{ count }}<span v-if="count !== total"> / {{ total }}</span> 张</span>
-      </p>
-    </div>
+    <h1 id="intro-title" class="visually-hidden">{{ site.name }} · 牌堆</h1>
+
+    <p class="intro__hint">
+      {{ site.hint }}
+      <span class="intro__count">{{ count }}<span v-if="count !== total"> / {{ total }}</span> 张</span>
+    </p>
 
     <div class="intro__tools">
       <label class="search" :class="{ 'is-focused': focused }">
@@ -76,49 +71,20 @@ defineExpose({ focus: () => input.value?.focus() })
 <style scoped>
 .intro {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: clamp(20px, 4vw, 48px);
-  padding-bottom: clamp(24px, 3.4vw, 40px);
-}
-
-.intro__copy {
-  min-width: 0;
-}
-
-.intro__eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin-bottom: 14px;
-}
-
-.intro__title {
-  font-size: clamp(1.6rem, 3.1vw, 2.45rem);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
-  text-wrap: balance;
-}
-
-.intro__title em {
-  font-style: normal;
-  background: var(--accent-grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  gap: 18px;
+  padding-bottom: clamp(18px, 2.4vw, 26px);
 }
 
 .intro__hint {
-  margin-top: 14px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  font-size: 0.8rem;
+  min-width: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
   color: var(--text-3);
 }
 
@@ -130,6 +96,7 @@ defineExpose({ focus: () => input.value?.focus() })
   border-radius: var(--radius-pill);
   border: 1px solid var(--line);
   color: var(--text-2);
+  white-space: nowrap;
 }
 
 .intro__tools {
@@ -240,7 +207,7 @@ defineExpose({ focus: () => input.value?.focus() })
   .intro {
     flex-direction: column;
     align-items: stretch;
-    gap: 22px;
+    gap: 14px;
   }
   .intro__tools {
     justify-content: space-between;
