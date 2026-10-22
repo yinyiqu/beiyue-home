@@ -366,6 +366,33 @@
 }
 
 @media (max-width: 899.98px) {
+  /* 竖排时没有悬停抽出，卡面裁到「露出的那一条」：
+     发牌上升的过程中不会露出前一张的牌身 */
+  .deck__item:not(:last-child) .card__face {
+    aspect-ratio: auto;
+    height: 100%;
+  }
+  /* 牌身被裁到一条，牌面大序号会挤进这一条，竖屏直接藏掉 */
+  .deck__item:not(:last-child) .card__series {
+    display: none;
+  }
+  /* 最后一张不必再撑满 9:16 去盖住前一张，收成 4:3 更像一张摊开的牌 */
+  .deck__item:last-child {
+    --card-rw: 16;
+    --card-rh: 12;
+  }
+  .deck__item:last-child .card__series {
+    font-size: 150px;
+    bottom: -18px;
+  }
+  .deck__item:last-child .card__desc {
+    display: -webkit-box;
+  }
+  .deck__item:last-child .card__cta {
+    bottom: 22px;
+    padding: 8px 13px;
+    font-size: 0.72rem;
+  }
   .card__desc {
     display: none;
   }
