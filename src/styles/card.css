@@ -227,6 +227,47 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* 最后一张完整露出，底部的「打开」让它不至于空 */
+.card__cta {
+  position: absolute;
+  left: clamp(38px, 4.6vw, 52px);
+  bottom: clamp(28px, 4vw, 40px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid hsl(var(--hue) 85% 82% / 0.28);
+  background: hsl(var(--hue) 70% 80% / 0.08);
+  font-size: 0.78rem;
+  color: hsl(var(--hue) 90% 92% / 0.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+:root[data-theme='light'] .card__cta {
+  border-color: hsl(var(--hue) 55% 45% / 0.25);
+  background: rgba(255, 255, 255, 0.5);
+  color: hsl(var(--hue) 55% 32%);
+}
+.card__cta-arrow {
+  font-size: 0.9rem;
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+.card:hover .card__cta-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* 最后一张的简介可以多放两行 */
+.deck__item:last-child .card__desc {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  max-width: 34ch;
+  margin-top: 6px;
+  font-size: clamp(0.78rem, 1vw, 0.86rem);
+}
+
 /* 左缘竖排地址：牌向左抽出时，这一条始终留在视野里 */
 .card__spine {
   position: absolute;
@@ -352,160 +393,6 @@
   .card__face::after {
     animation: none !important;
     transition: none !important;
-  }
-}
-
-
-/* ── 说明牌：始终整张露出，不向左抽出 ───────────────────── */
-.card--colophon {
-  padding-top: calc(100% * var(--rh) / var(--rw));
-}
-
-.card--colophon .card__face {
-  transform: none;
-}
-
-.card--colophon:hover .card__face,
-.card--colophon:focus-within .card__face {
-  transform: none;
-  border-color: hsl(var(--hue) 80% 80% / 0.32);
-  box-shadow: 0 34px 60px -34px hsl(var(--hue) 85% 22% / 0.9),
-    0 14px 26px -18px rgba(0, 0, 0, 0.55), inset 0 1px 0 hsl(var(--hue) 95% 90% / 0.16);
-}
-
-.card--colophon .card__icon {
-  background: var(--accent-grad);
-  color: #2a1d0d;
-  font-size: 1.35rem;
-}
-
-.card__about {
-  position: absolute;
-  left: clamp(38px, 4.6vw, 52px);
-  right: clamp(26px, 5vw, 64px);
-  top: 27%;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(14px, 1.8vw, 22px);
-  max-width: 56ch;
-}
-
-.card__about p {
-  font-size: clamp(0.84rem, 1.15vw, 0.96rem);
-  line-height: 1.95;
-  color: var(--text-2);
-  text-wrap: pretty;
-}
-
-.card__about strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.card__specs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(18px, 3.4vw, 42px);
-  padding-top: 16px;
-  border-top: 1px solid hsl(var(--hue) 70% 82% / 0.14);
-}
-
-:root[data-theme='light'] .card__specs {
-  border-top-color: hsl(var(--hue) 50% 40% / 0.14);
-}
-
-.card__specs > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.card__specs dt {
-  font-family: var(--font-mono);
-  font-size: 0.54rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.card__specs dd {
-  font-size: 0.8rem;
-  color: var(--text-2);
-}
-
-.card__about-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.card__about-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 15px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--line-strong);
-  font-size: 0.78rem;
-  color: var(--text-2);
-  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
-}
-.card__about-links a:hover {
-  color: var(--text);
-  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
-  background: var(--accent-soft);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 899.98px) {
-  /* 说明牌在竖屏不必占满 9:16，收紧一点更像一张便签 */
-  .card--colophon {
-    padding-top: calc(100% * 4 / 3);
-  }
-  .card--colophon .card__face {
-    aspect-ratio: 3 / 4;
-  }
-  .card__about {
-    top: 22%;
-    gap: 13px;
-  }
-  .card__about p {
-    font-size: 0.82rem;
-    line-height: 1.85;
-  }
-  .card__about-links a {
-    padding: 7px 13px;
-    font-size: 0.74rem;
-  }
-}
-
-
-/* 有牌被抽出时，其余牌轻轻压暗，像舞台只打了一束光 */
-@media (hover: hover) and (pointer: fine) {
-  .deck:has(.card:hover) .card:not(:hover) .card__face {
-    filter: brightness(0.9) saturate(0.86);
-  }
-  :root[data-theme='light'] .deck:has(.card:hover) .card:not(:hover) .card__face {
-    filter: brightness(0.97) saturate(0.9);
-  }
-}
-
-/* 竖卡 + 精确指针：不做横向抽出（没有车道），只上浮一点 */
-@media (hover: hover) and (pointer: fine) and (max-width: 899.98px) {
-  .card:hover .card__face,
-  .card:focus-visible .card__face {
-    transform: translate3d(0, -8px, 0) rotate(var(--tilt, 0deg)) scale(1.012);
-    border-color: hsl(var(--hue) 88% 78% / 0.45);
-    box-shadow: 0 30px 50px -26px hsl(var(--hue) 85% 20% / 0.95),
-      0 0 40px -16px hsl(var(--hue) 92% 62% / 0.4);
-  }
-  .card:hover .card__icon {
-    transform: scale(1.05);
-  }
-  .card:active .card__face {
-    transform: translate3d(0, -3px, 0) rotate(var(--tilt, 0deg)) scale(0.995);
   }
 }
 

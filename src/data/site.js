@@ -14,23 +14,15 @@
  */
 
 export const site = {
-  name: 'yuetool',
-  title: 'yuetool · 牌堆',
+  name: 'Beiyue',
+  sub: 'home',
+  title: 'Beiyue home',
   hint: '悬停抽一张 · 点击打开',
-  author: 'yuetool',
+  author: 'Beiyue',
   since: 2026,
   github: '',
   email: '',
-  footerNote: '用 Vue 3 + Vite 手写的一叠牌',
-  about: {
-    title: '关于这叠牌',
-    meta: 'Colophon · 说明',
-    glyph: '❖',
-    paragraphs: [
-      '这里收着我用零碎时间做的小工具和小游戏：有的解决一点小麻烦，有的只是好玩。',
-      '新牌会不定期发下来，旧的也会慢慢翻新。想聊天、提建议，或者只是路过，都欢迎。'
-    ]
-  }
+  footerNote: '用 Vue 3 + Vite 手写的一叠牌'
 }
 
 /** 12 个主色相轮转：新增卡片自动取色，不需要手动配 */
@@ -56,6 +48,15 @@ const SAMPLES = [
     url: 'https://yue.dpdns.org',
     emoji: '🎬'
   },
+  {
+    id: 'gameboy',
+    name: 'GameBoy',
+    en: 'Game Boy Live',
+    tag: '游戏',
+    desc: '拖一张卡带进去，就能在浏览器里玩 GB / GBC / GBA。',
+    url: `${import.meta.env.BASE_URL}GameBoyLive/`,
+    emoji: '🕹️'
+  }
 ]
 
 export const apps = SAMPLES.map((app, i) => ({

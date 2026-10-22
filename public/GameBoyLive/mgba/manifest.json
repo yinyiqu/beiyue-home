@@ -1,0 +1,8 @@
+{
+  "package": "@wasm-gaming/mgba-wasm",
+  "version": "0.1.1",
+  "files": {
+    "mgba.js": "e4d7a15cc5bead4cef965eecacf40e20454081d3e97d0fa44b948aa1db41abdc",
+    "mgba.wasm": "11be9f4b88f5c26249b5b48b677470b2c0d20e5cdc31d8415650cbfd7171c90a"
+  }
+}

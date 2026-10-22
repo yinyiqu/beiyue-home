@@ -1,46 +1,14 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { ref } from 'vue'
 import DeckCard from './DeckCard.vue'
-import ColophonCard from './ColophonCard.vue'
 
-const props = defineProps({
+defineProps({
   apps: { type: Array, default: () => [] },
-  deal: { type: Number, default: 0 },
-  showColophon: { type: Boolean, default: true }
+  deal: { type: Number, default: 0 }
 })
 const emit = defineEmits(['clear'])
 
 const deckEl = ref(null)
-let observer = null
-
-/** 牌滚进视口时再发出来：移动端也能看到逐张落下的动效 */
-function setupReveal() {
-  observer?.disconnect()
-  const items = Array.from(deckEl.value?.querySelectorAll('.deck__item') || [])
-  if (!items.length) return
-
-  if (!('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    items.forEach((el) => el.classList.add('is-in'))
-    return
-  }
-
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return
-        entry.target.classList.add('is-in')
-        observer.unobserve(entry.target)
-      })
-    },
-    { threshold: 0.08, rootMargin: '0px 0px -4% 0px' }
-  )
-  items.forEach((el) => observer.observe(el))
-}
-
-onMounted(() => nextTick(setupReveal))
-watch(() => props.apps.map((a) => a.id).join('|') + '#' + props.deal, () => nextTick(setupReveal))
-onBeforeUnmount(() => observer?.disconnect())
 
 /** ↑↓ / ←→ 在牌堆里移动焦点，Enter 由链接自己处理 */
 function moveFocus(step) {
@@ -79,12 +47,7 @@ function onKeydown(event) {
   <div class="deck-root">
     <div v-if="apps.length" ref="deckEl" class="deck" @keydown="onKeydown">
       <div v-for="(app, i) in apps" :key="`${app.id}-${deal}`" class="deck__item" :style="{ '--i': i }">
-        <DeckCard :app="app" :index="i" />
-      </div>
-
-      <!-- 说明牌：搜索时收起，免得挡住结果 -->
-      <div v-if="showColophon" :key="`colophon-${deal}`" class="deck__item" :style="{ '--i': apps.length }">
-        <ColophonCard :count="apps.length" />
+        <DeckCard :app="app" :index="i" :is-last="i === apps.length - 1" />
       </div>
     </div>
 
@@ -119,16 +82,20 @@ function onKeydown(event) {
 .deck__item {
   position: relative;
   z-index: calc(var(--i, 0) + 1);
-  /* 滚进视口时逐张落下 */
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 520ms var(--ease-out), transform 640ms var(--ease-spring);
-  transition-delay: calc(min(var(--i, 0), 4) * 55ms);
+  /* 打牌：每张从下方升起来，压在前一张上 */
+  animation: dealUp 620ms var(--ease-spring) backwards;
+  animation-delay: calc(var(--i, 0) * 150ms);
 }
 
-.deck__item.is-in {
-  opacity: 1;
-  transform: translateY(0);
+@keyframes dealUp {
+  from {
+    opacity: 0;
+    transform: translateY(72px) rotate(-1.4deg) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
 }
 
 .empty {
@@ -172,6 +139,23 @@ function onKeydown(event) {
    左侧留 15% 作为「抽出车道」，卡片宽 85%；
    抽出量 17.65% 卡宽 = 15% 容器宽，正好填满车道，不越界。 */
 @media (min-width: 900px) {
+  .deck__item {
+    animation-name: dealUpWide;
+    animation-duration: 560ms;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  @keyframes dealUpWide {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .deck-root {
     --card-rw: 16;
     --card-rh: 9;

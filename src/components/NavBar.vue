@@ -36,7 +36,7 @@ onBeforeUnmount(() => {
         </span>
         <span class="brand__text">
           <span class="brand__name">{{ site.name }}</span>
-          <span class="brand__sub">deck</span>
+          <span class="brand__sub">{{ site.sub }}</span>
         </span>
       </a>
 

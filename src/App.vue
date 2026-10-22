@@ -73,7 +73,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         id="deck"
         :apps="filtered"
         :deal="deal"
-        :show-colophon="!query.trim()"
         @clear="query = ''"
       />
     </div>

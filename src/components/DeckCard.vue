@@ -4,7 +4,8 @@ import { useToast } from '../composables/useToast.js'
 
 const props = defineProps({
   app: { type: Object, required: true },
-  index: { type: Number, default: 0 }
+  index: { type: Number, default: 0 },
+  isLast: { type: Boolean, default: false }
 })
 
 const { show } = useToast()
@@ -24,7 +25,7 @@ const series = computed(() => String(props.index + 1).padStart(2, '0'))
 const address = computed(() => {
   if (!props.app.url) return 'sample — url not set'
   try {
-    const { hostname, pathname, search, hash } = new URL(props.app.url)
+    const { hostname, pathname, search, hash } = new URL(props.app.url, document.baseURI)
     return `${hostname.replace(/^www\./, '')}${pathname}${search}${hash}`.replace(/\/+$/, '')
   } catch (e) {
     return props.app.url
@@ -142,6 +143,11 @@ function onOpen(event) {
       </span>
 
       <span class="card__spine" aria-hidden="true">{{ address }}</span>
+
+      <span v-if="isLast" class="card__cta" aria-hidden="true">
+        <span>打开项目</span>
+        <span class="card__cta-arrow">↗</span>
+      </span>
 
     </span>
   </a>
