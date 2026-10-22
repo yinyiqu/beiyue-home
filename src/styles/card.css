@@ -1,0 +1,454 @@
+.card {
+  --rw: var(--card-rw, 9);
+  --rh: var(--card-rh, 16);
+  --lift: -17.65%;
+
+  position: relative;
+  display: block;
+  height: 0;
+  /* 叠放时只露出顶部一条：百分比 padding 让这条跟着卡宽自适应 */
+  padding-top: calc(100% * var(--rh) / var(--rw) * var(--band, 0.2));
+  color: var(--text);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card__face {
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: var(--rw) / var(--rh);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid hsl(var(--hue) 70% 72% / 0.17);
+  background: repeating-linear-gradient(
+      112deg,
+      hsl(var(--hue) 90% 92% / 0.022) 0 1px,
+      transparent 1px 8px
+    ),
+    radial-gradient(120% 140% at 4% -12%, hsl(var(--hue) 88% 74% / 0.2), transparent 56%),
+    linear-gradient(
+      158deg,
+      hsl(var(--hue) 34% 22%) 0%,
+      hsl(var(--hue) 30% 13%) 55%,
+      hsl(var(--hue) 24% 9%) 100%
+    );
+  box-shadow: var(--shadow-card), inset 0 1px 0 hsl(var(--hue) 90% 88% / 0.1);
+  transform: translate3d(0, 0, 0) rotate(var(--tilt, 0deg));
+  transform-origin: 50% 92%;
+  transition: transform 520ms var(--ease-spring), box-shadow 400ms var(--ease-out),
+    border-color 400ms var(--ease-out);
+  animation: dealIn 620ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 62ms);
+}
+
+:root[data-theme='light'] .card__face {
+  border-color: hsl(var(--hue) 48% 46% / 0.15);
+  background: repeating-linear-gradient(
+      112deg,
+      hsl(var(--hue) 55% 25% / 0.028) 0 1px,
+      transparent 1px 9px
+    ),
+    radial-gradient(120% 140% at 4% -12%, hsl(var(--hue) 92% 74% / 0.3), transparent 58%),
+    linear-gradient(
+      158deg,
+      hsl(var(--hue) 70% 98%) 0%,
+      hsl(var(--hue) 52% 95%) 55%,
+      hsl(var(--hue) 40% 91%) 100%
+    );
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+/* 内框线 */
+.card__frame {
+  position: absolute;
+  inset: 9px;
+  border-radius: calc(var(--radius-card) - 7px);
+  border: 1px solid hsl(var(--hue) 82% 82% / 0.11);
+  pointer-events: none;
+  transition: border-color 400ms var(--ease-out);
+}
+:root[data-theme='light'] .card__frame {
+  border-color: hsl(var(--hue) 60% 40% / 0.1);
+}
+
+/* 扫过牌面的一道光 */
+.card__face::after {
+  content: '';
+  position: absolute;
+  inset: -40% -45%;
+  z-index: 3;
+  background: linear-gradient(
+    112deg,
+    transparent 42%,
+    hsl(var(--hue) 100% 95% / 0.13) 50%,
+    transparent 58%
+  );
+  transform: translate3d(-62%, 0, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 820ms var(--ease-out), opacity 340ms var(--ease-out);
+}
+
+.card__series {
+  position: absolute;
+  right: clamp(18px, 3vw, 34px);
+  bottom: clamp(-26px, -2vw, -14px);
+  z-index: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(180px, 24vw, 280px);
+  font-weight: 700;
+  font-style: italic;
+  line-height: 0.78;
+  letter-spacing: -0.07em;
+  color: hsl(var(--hue) 90% 86% / 0.07);
+  pointer-events: none;
+  user-select: none;
+  transition: color 420ms var(--ease-out), transform 620ms var(--ease-spring);
+}
+:root[data-theme='light'] .card__series {
+  color: hsl(var(--hue) 62% 34% / 0.075);
+}
+
+/* 顶部信息区：叠放时唯一必须看清的一条 */
+.card__corner {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(22px, 2.8vw, 30px) clamp(20px, 2.8vw, 32px) 20px clamp(38px, 4.6vw, 52px);
+}
+
+.card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.card__name {
+  font-size: clamp(1.14rem, 2.05vw, 1.46rem);
+  font-weight: 620;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card__dot {
+  opacity: 0.6;
+}
+
+.card__desc {
+  margin-top: 2px;
+  max-width: 44ch;
+  font-size: clamp(0.74rem, 1.1vw, 0.82rem);
+  line-height: 1.45;
+  color: var(--text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 5vw, 54px);
+  height: clamp(44px, 5vw, 54px);
+  border-radius: 32%;
+  overflow: hidden;
+  background: linear-gradient(155deg, hsl(var(--hue) 92% 72%), hsl(var(--hue) 78% 44%));
+  box-shadow: 0 10px 20px -10px hsl(var(--hue) 85% 25% / 0.85),
+    inset 0 1px 0 hsl(var(--hue) 100% 94% / 0.42);
+  transition: transform 520ms var(--ease-spring), box-shadow 400ms var(--ease-out);
+}
+
+.card__icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card__emoji {
+  font-size: clamp(1.35rem, 2.4vw, 1.62rem);
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28));
+}
+
+.card__initial {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: hsl(var(--hue) 100% 97% / 0.94);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* 左缘竖排地址：牌向左抽出时，这一条始终留在视野里 */
+.card__spine {
+  position: absolute;
+  top: clamp(22px, 3vw, 30px);
+  left: clamp(12px, 1.6vw, 17px);
+  bottom: 22px;
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.15em;
+  color: hsl(var(--hue) 55% 92% / 0.42);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+}
+:root[data-theme='light'] .card__spine {
+  color: hsl(var(--hue) 42% 32% / 0.55);
+}
+
+.card__end {
+  position: absolute;
+  left: clamp(38px, 4.6vw, 52px);
+  bottom: 26px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.card__end-rule {
+  width: 26px;
+  height: 1px;
+  background: var(--line-strong);
+}
+
+@keyframes dealIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) rotate(calc(var(--tilt, 0deg) * 2.4)) scale(0.985);
+  }
+}
+
+/* 横版 + 精确指针：整张牌向左抽出，填满左侧预留的车道 */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .card__face,
+  .card:focus-visible .card__face {
+    will-change: transform;
+  }
+
+  .card:hover .card__face {
+    transform: translate3d(var(--lift), 0, 0) rotate(0deg);
+    border-color: hsl(var(--hue) 85% 74% / 0.42);
+    box-shadow: 0 34px 60px -32px hsl(var(--hue) 85% 22% / 0.95),
+      0 14px 26px -18px rgba(0, 0, 0, 0.6), inset 0 1px 0 hsl(var(--hue) 95% 88% / 0.16);
+  }
+  .card:hover .card__face::after {
+    opacity: 1;
+    transform: translate3d(58%, 0, 0);
+  }
+  .card:hover .card__frame {
+    border-color: hsl(var(--hue) 85% 80% / 0.2);
+  }
+  .card:hover .card__icon {
+    transform: scale(1.06) rotate(-3deg);
+  }
+  .card:hover .card__series {
+    color: hsl(var(--hue) 90% 86% / 0.12);
+    transform: translateX(-8px);
+  }
+
+  :root[data-theme='light'] .card:hover .card__face {
+    border-color: hsl(var(--hue) 55% 52% / 0.35);
+    box-shadow: 0 32px 56px -34px hsl(var(--hue) 55% 35% / 0.45),
+      0 14px 26px -20px rgba(60, 45, 30, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  :root[data-theme='light'] .card:hover .card__series {
+    color: hsl(var(--hue) 62% 34% / 0.11);
+  }
+
+  .card:active .card__face {
+    transform: translate3d(calc(var(--lift) * 0.5), 0, 0) rotate(0deg);
+  }
+}
+
+.card:focus-visible .card__face {
+  border-color: hsl(var(--hue) 90% 75% / 0.6);
+  box-shadow: 0 0 0 3px hsl(var(--hue) 85% 65% / 0.35), var(--shadow-card);
+}
+
+@media (max-width: 899.98px) {
+  .card__desc {
+    display: none;
+  }
+  .card__corner {
+    gap: 12px;
+    padding: 22px 18px 16px 40px;
+  }
+  .card__name {
+    font-size: 1.08rem;
+  }
+  .card__spine {
+    font-size: 0.5rem;
+    left: 13px;
+    top: 24px;
+  }
+  .card__series {
+    font-size: 200px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__face,
+  .card__icon,
+  .card__series,
+  .card__face::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* ── 说明牌：始终整张露出，不向左抽出 ───────────────────── */
+.card--colophon {
+  padding-top: calc(100% * var(--rh) / var(--rw));
+}
+
+.card--colophon .card__face {
+  transform: none;
+}
+
+.card--colophon:hover .card__face,
+.card--colophon:focus-within .card__face {
+  transform: none;
+  border-color: hsl(var(--hue) 80% 80% / 0.32);
+  box-shadow: 0 34px 60px -34px hsl(var(--hue) 85% 22% / 0.9),
+    0 14px 26px -18px rgba(0, 0, 0, 0.55), inset 0 1px 0 hsl(var(--hue) 95% 90% / 0.16);
+}
+
+.card--colophon .card__icon {
+  background: var(--accent-grad);
+  color: #2a1d0d;
+  font-size: 1.35rem;
+}
+
+.card__about {
+  position: absolute;
+  left: clamp(38px, 4.6vw, 52px);
+  right: clamp(26px, 5vw, 64px);
+  top: 27%;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 1.8vw, 22px);
+  max-width: 56ch;
+}
+
+.card__about p {
+  font-size: clamp(0.84rem, 1.15vw, 0.96rem);
+  line-height: 1.95;
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.card__about strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.card__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(18px, 3.4vw, 42px);
+  padding-top: 16px;
+  border-top: 1px solid hsl(var(--hue) 70% 82% / 0.14);
+}
+
+:root[data-theme='light'] .card__specs {
+  border-top-color: hsl(var(--hue) 50% 40% / 0.14);
+}
+
+.card__specs > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.card__specs dt {
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.card__specs dd {
+  font-size: 0.8rem;
+  color: var(--text-2);
+}
+
+.card__about-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.card__about-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  font-size: 0.78rem;
+  color: var(--text-2);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+.card__about-links a:hover {
+  color: var(--text);
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 899.98px) {
+  /* 说明牌在竖屏不必占满 9:16，收紧一点更像一张便签 */
+  .card--colophon {
+    padding-top: calc(100% * 4 / 3);
+  }
+  .card--colophon .card__face {
+    aspect-ratio: 3 / 4;
+  }
+  .card__about {
+    top: 22%;
+    gap: 13px;
+  }
+  .card__about p {
+    font-size: 0.82rem;
+    line-height: 1.85;
+  }
+  .card__about-links a {
+    padding: 7px 13px;
+    font-size: 0.74rem;
+  }
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#08080c" />
+    <meta name="description" content="yuetool — 把做过的小东西，收成一叠牌。" />
+    <meta name="author" content="yuetool" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="yuetool · 牌堆" />
+    <meta property="og:description" content="把做过的小东西，收成一叠牌。" />
+    <meta property="og:image" content="./og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- 首屏之前定好主题，避免闪白 -->
+    <script>
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('yuetool-theme')
+          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches
+          var theme = stored || (prefersLight ? 'light' : 'dark')
+          document.documentElement.dataset.theme = theme
+          var meta = document.querySelector('meta[name="theme-color"]')
+          if (meta) meta.setAttribute('content', theme === 'light' ? '#f4f1ea' : '#08080c')
+        } catch (e) {}
+      })()
+    </script>
+
+    <title>yuetool · 牌堆</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript>
+      <p style="padding: 48px; font-family: sans-serif">
+        这个页面用了一点点 JavaScript 来发牌，请开启后再来。
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
