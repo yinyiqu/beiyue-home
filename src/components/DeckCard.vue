@@ -10,6 +10,22 @@ const props = defineProps({
 
 const iconOk = ref(true)
 
+/**
+ * 点击时把牌面固定在当前位置：页面开始跳转时 :hover 会丢失，
+ * 若还带 480ms 的弹性过渡，看起来就是「点一下弹回去」。
+ */
+function freezeFace(event) {
+  const face = event.currentTarget.querySelector('.card__face')
+  if (!face) return
+  face.style.transition = 'none'
+}
+
+function releaseFace(event) {
+  const face = event.currentTarget.querySelector('.card__face')
+  if (!face) return
+  face.style.transition = ''
+}
+
 /** 牌心的编号：两位数字，像牌角上的点数 */
 const series = computed(() => String(props.index + 1).padStart(2, '0'))
 
@@ -46,6 +62,9 @@ const style = computed(() => {
     :class="{ 'card--last': isLast }"
     :style="style"
     :aria-label="`${app.name}${app.tag ? '，' + app.tag : ''}${app.desc ? '，' + app.desc : ''}`"
+    @pointerdown="freezeFace"
+    @pointerup="releaseFace"
+    @pointercancel="releaseFace"
   >
     <span class="card__face">
       <span class="card__frame" aria-hidden="true" />

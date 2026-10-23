@@ -333,15 +333,6 @@
   }
 }
 
-/* 触屏：按下时牌面轻微回缩，给一个即时反馈 */
-@media (hover: none), (pointer: coarse) {
-  .card:active .card__face {
-    transform: translate3d(var(--fan, 0px), 0, 0) rotate(var(--tilt, 0deg)) scale(0.994);
-    filter: brightness(1.06);
-    transition-duration: 140ms;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .card__face,
   .card__icon,
