@@ -300,10 +300,6 @@
     color: hsl(var(--hue) 62% 34% / 0.13);
   }
 
-  .card:active .card__face {
-    transform: translate3d(calc(var(--lift) * 0.55), 0, 0) rotate(0deg);
-  }
-
   .card:focus-visible .card__face {
     box-shadow: 0 0 0 3px hsl(var(--hue) 90% 66% / 0.4),
       0 26px 44px -24px hsl(var(--hue) 85% 28% / 0.9);
