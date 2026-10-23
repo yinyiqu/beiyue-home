@@ -43,7 +43,6 @@ defineExpose({ focus: () => input.value?.focus() })
           <path d="M6 6l12 12M18 6L6 18" />
         </svg>
       </button>
-      <kbd v-else class="search__kbd" aria-hidden="true">/</kbd>
     </label>
 
     <button class="shuffle" type="button" title="把牌堆打乱" @click="emit('shuffle')">
@@ -112,16 +111,6 @@ defineExpose({ focus: () => input.value?.focus() })
   display: none;
 }
 
-.search__kbd {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  line-height: 1;
-  padding: 3px 5px;
-  border-radius: 5px;
-  border: 1px solid var(--line);
-  color: var(--text-3);
-}
-
 .search__clear {
   display: grid;
   place-items: center;
@@ -139,9 +128,12 @@ defineExpose({ focus: () => input.value?.focus() })
 .shuffle {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   height: 38px;
-  padding-inline: 15px;
+  /* 比图标 + 文字的自然宽度更舒展一些，和 220px 搜索框配平 */
+  min-width: 96px;
+  padding-inline: 18px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--line);
   background: var(--surface);
@@ -179,6 +171,7 @@ defineExpose({ focus: () => input.value?.focus() })
   }
   .shuffle {
     flex: 0 0 auto;
+    min-width: 46px;
     padding-inline: 12px;
   }
   .shuffle span {
