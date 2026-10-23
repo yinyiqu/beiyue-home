@@ -8,16 +8,31 @@ import SiteFooter from './components/SiteFooter.vue'
 import ToastHost from './components/ToastHost.vue'
 import { apps as sourceApps } from './data/site.js'
 
+/** 当前牌序：洗牌只动这份数组，原始数据保持不动 */
+const deck = ref([...sourceApps])
 const query = ref('')
+const deal = ref(0)
 const intro = ref(null)
 
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()
-  if (!q) return sourceApps
-  return sourceApps.filter((app) =>
+  if (!q) return deck.value
+  return deck.value.filter((app) =>
     [app.name, app.en, app.tag, app.desc].join(' ').toLowerCase().includes(q)
   )
 })
+
+function shuffle() {
+  const next = [...deck.value]
+  for (let i = next.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[next[i], next[j]] = [next[j], next[i]]
+  }
+  deck.value = next
+  // key 变化 → 整叠牌重新发一次，动画重播
+  deal.value += 1
+  query.value = ''
+}
 
 /** 全局快捷键：/ 聚焦搜索，Esc 清空 */
 function onKeydown(event) {
@@ -47,8 +62,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
   <main id="top" class="main">
     <div class="shell">
-      <DeckIntro ref="intro" v-model="query" />
-      <Deck id="deck" :apps="filtered" @clear="query = ''" />
+      <DeckIntro ref="intro" v-model="query" @shuffle="shuffle" />
+      <Deck id="deck" :apps="filtered" :deal="deal" @clear="query = ''" />
     </div>
   </main>
 

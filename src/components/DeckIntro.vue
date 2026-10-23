@@ -6,7 +6,7 @@ const props = defineProps({
   total: { type: Number, default: 0 },
   modelValue: { type: String, default: '' }
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'shuffle'])
 
 const input = ref(null)
 const focused = ref(false)
@@ -45,12 +45,23 @@ defineExpose({ focus: () => input.value?.focus() })
       </button>
       <kbd v-else class="search__kbd" aria-hidden="true">/</kbd>
     </label>
+
+    <button class="shuffle" type="button" title="把牌堆打乱" @click="emit('shuffle')">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7h3.5l9 10H20" />
+        <path d="M4 17h3.5l9-10H20" />
+        <path d="m17.5 4.5 2.5 2.5-2.5 2.5M17.5 14.5 20 17l-2.5 2.5" />
+      </svg>
+      <span>洗牌</span>
+    </button>
   </div>
 </template>
 
 <style scoped>
 .bar {
   display: flex;
+  align-items: center;
+  gap: 10px;
   justify-content: flex-start;
   width: 100%;
   max-width: 860px;
@@ -125,6 +136,37 @@ defineExpose({ focus: () => input.value?.focus() })
   background: var(--line);
 }
 
+.shuffle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding-inline: 15px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.8rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform var(--dur-fast) var(--ease-spring), color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.shuffle:hover {
+  transform: translateY(-1px);
+  color: var(--text);
+  border-color: var(--line-strong);
+}
+.shuffle:active {
+  transform: translateY(0) scale(0.97);
+}
+.shuffle svg {
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+.shuffle:hover svg {
+  transform: rotate(18deg);
+}
+
 @media (min-width: 720px) {
   .bar {
     padding-inline: 24px;
@@ -134,6 +176,13 @@ defineExpose({ focus: () => input.value?.focus() })
 @media (max-width: 719.98px) {
   .search {
     width: 100%;
+  }
+  .shuffle {
+    flex: 0 0 auto;
+    padding-inline: 12px;
+  }
+  .shuffle span {
+    display: none;
   }
 }
 </style>

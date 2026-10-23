@@ -2,7 +2,9 @@
 import DeckCard from './DeckCard.vue'
 
 defineProps({
-  apps: { type: Array, default: () => [] }
+  apps: { type: Array, default: () => [] },
+  /** 洗牌计数：变化时整套牌重挂载，发牌动画重播 */
+  deal: { type: Number, default: 0 }
 })
 const emit = defineEmits(['clear'])
 </script>
@@ -12,7 +14,7 @@ const emit = defineEmits(['clear'])
     <div v-if="apps.length" class="deck">
       <div
         v-for="(app, i) in apps"
-        :key="app.id"
+        :key="`${app.id}-${deal}`"
         class="deck__item"
         :style="{ '--i': i }"
       >
