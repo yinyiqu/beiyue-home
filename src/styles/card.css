@@ -314,22 +314,19 @@
 }
 
 /* ── 竖屏 / 窄窗：没有抽出的车道，悬停只轻轻上浮 ─────────── */
+/* ── 窄屏：不做任何动画 ───────────────────────────────────
+   卡片直接落位，悬停、按下、发牌全都不动；位移与过渡只在桌面生效 */
 @media (max-width: 719.98px) {
-  .card:hover .card__face,
-  .card:focus-visible .card__face {
-    transform: translate3d(var(--fan, 0px), -14px, 0) rotate(var(--tilt, 0deg));
-    border-color: hsl(var(--hue) 85% 72% / 0.42);
-    box-shadow: 0 26px 44px -26px hsl(var(--hue) 85% 28% / 0.95),
-      0 14px 24px -16px rgba(0, 0, 0, 0.55), inset 0 1px 0 hsl(var(--hue) 95% 88% / 0.16);
+  .card__face,
+  .card__icon,
+  .card__series {
+    animation: none;
+    transition: none;
   }
 
-  :root[data-theme='light'] .card:hover .card__face {
-    box-shadow: 0 26px 44px -28px hsl(var(--hue) 60% 40% / 0.4),
-      0 14px 24px -18px rgba(20, 20, 32, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  }
-
-  .card:hover .card__icon {
-    transform: scale(1.04);
+  /* 扫光那道高光是给鼠标准备的，触屏没有 hover，直接去掉 */
+  .card__face::before {
+    display: none;
   }
 }
 
