@@ -28,17 +28,11 @@ export const site = {
 /** 12 个主色相轮转：新增卡片自动取色，不需要手动配 */
 const HUES = [32, 202, 344, 164, 268, 12, 190, 96, 222, 316, 48, 148]
 
-/** 示例牌：把 url 换成你自己的项目地址即可 */
+/**
+ * 卡片清单：顺序就是牌堆里从上到下的顺序，最后一张会整张露出。
+ * hue 不写就按 HUES 顺序自动分配。
+ */
 const SAMPLES = [
-  {
-    id: 'imghub-image-host',
-    name: 'Imghub 图床',
-    en: 'Image Host',
-    tag: '工具',
-    desc: '拖进图片，马上拿到一个能直接用的链接。',
-    url: 'https://beii.cc.cd',
-    emoji: '🖼️'
-  },
   {
     id: 'danmaku',
     name: '弹幕',
@@ -46,7 +40,8 @@ const SAMPLES = [
     tag: '趣味',
     desc: '打开就能发，屏幕上飘过的都是别人的碎碎念。',
     url: 'https://yue.dpdns.org',
-    emoji: '🎬'
+    emoji: '🎬',
+    hue: 205
   },
   {
     id: 'gameboy',
@@ -58,8 +53,57 @@ const SAMPLES = [
     emoji: '🕹️',
     /* 用模拟器自己的图标，和参考站一致 */
     icon: `${import.meta.env.BASE_URL}icons/gameboy.svg`,
-    /* 与参考站 GameBoy 那张牌一致：青绿 */
     hue: 172
+  },
+  {
+    id: 'jianguoyun',
+    name: '坚果云',
+    en: 'Nutstore',
+    tag: '工具',
+    desc: '跨设备同步文件，改完自动上传。',
+    url: 'https://www.jianguoyun.com',
+    emoji: '☁️',
+    hue: 38
+  },
+  {
+    id: 'dnshe',
+    name: 'DNSHE 域名',
+    en: 'DNSHE',
+    tag: '工具',
+    desc: '解析、转发、记录，一处管好域名。',
+    url: 'https://my.dnshe.com/',
+    emoji: '🌐',
+    hue: 262
+  },
+  {
+    id: 'vcd-mail',
+    name: 'V.CD 邮箱',
+    en: 'V.CD Mail',
+    tag: '工具',
+    desc: '挂在 v.cd 域名上的一个邮箱。',
+    url: 'https://mail.v.cd',
+    emoji: '✉️',
+    hue: 320
+  },
+  {
+    id: 'iloveimg',
+    name: '图片编辑',
+    en: 'iLoveIMG',
+    tag: '工具',
+    desc: '裁剪、压缩、转格式，全在浏览器里完成。',
+    url: 'https://www.iloveimg.com/zh-cn',
+    emoji: '🖼️',
+    hue: 8
+  },
+  {
+    id: 'fontchanger',
+    name: '字体转换',
+    en: 'Font Changer',
+    tag: '工具',
+    desc: '把字换成各种花体、符号体，复制就能用。',
+    url: 'https://www.iamwawa.cn/fontchanger.html',
+    emoji: 'Aa',
+    hue: 100
   }
 ]
 
