@@ -14,7 +14,7 @@
  */
 
 export const site = {
-  name: 'Beiyue',
+  name: '𝓫𝓮𝓲𝔂𝓾𝓮',
   sub: 'home',
   title: 'Beiyue home',
   hint: '上下滑动翻牌 · 点开就用',
@@ -71,7 +71,7 @@ const SAMPLES = [
     en: 'DNSHE',
     tag: '工具',
     desc: '解析、转发、记录，一处管好域名。',
-    url: 'https://my.dnshe.com/',
+    url: 'https://my.dnshe.com/clientarea.php?language=chinese',
     emoji: '🌐',
     hue: 262
   },

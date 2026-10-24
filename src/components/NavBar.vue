@@ -7,6 +7,50 @@ const { theme, toggle } = useTheme()
 const scrolled = ref(false)
 let raf = 0
 
+/**
+ * 左上角的字标是一枚颜文字：进来是笑脸，离开是不舍。
+ * 三段文字等宽（括号 + 两只眼 + 括号 + 手势，共 5 格），
+ * 换表情时导航栏不会跳动。
+ */
+const FACES = {
+  idle: { text: '(oo)y', label: '平静' },
+  happy: { text: '(^^)Y', label: '开心' },
+  sad: { text: '(TT)y', label: '不舍' }
+}
+const mood = ref('idle')
+const hovering = ref(false)
+let moodTimer = 0
+
+function clearMoodTimer() {
+  clearTimeout(moodTimer)
+  moodTimer = 0
+}
+
+function enterFace() {
+  hovering.value = true
+  clearMoodTimer()
+  mood.value = 'happy'
+}
+
+function leaveFace() {
+  hovering.value = false
+  clearMoodTimer()
+  mood.value = 'sad'
+  // 不舍一会儿，再回到平静；期间如果又回来了，enter 会接管
+  moodTimer = window.setTimeout(() => {
+    if (!hovering.value) mood.value = 'idle'
+  }, 1200)
+}
+
+/** 点击（含触屏）也给一次笑脸反馈 */
+function cheer() {
+  clearMoodTimer()
+  mood.value = 'happy'
+  moodTimer = window.setTimeout(() => {
+    mood.value = hovering.value ? 'happy' : 'idle'
+  }, 900)
+}
+
 function onScroll() {
   if (raf) return
   raf = requestAnimationFrame(() => {
@@ -23,16 +67,28 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
   if (raf) cancelAnimationFrame(raf)
+  clearMoodTimer()
 })
 </script>
 
 <template>
   <header class="nav" :class="{ 'nav--scrolled': scrolled }">
     <div class="nav__inner">
-      <a class="brand" href="#top" :aria-label="`${site.name} 主页`">
+      <a
+        class="brand"
+        href="#top"
+        :aria-label="`${site.name} 主页`"
+        @mouseenter="enterFace"
+        @mouseleave="leaveFace"
+        @focus="enterFace"
+        @blur="leaveFace"
+        @click="cheer"
+      >
         <span class="mark" aria-hidden="true">
-          <span class="mark__card mark__card--back" />
-          <span class="mark__card mark__card--front" />
+          <span :key="mood" class="face">
+            <span class="face__rest">{{ FACES[mood].text.slice(0, 4) }}</span>
+            <span class="face__hand">{{ FACES[mood].text.slice(4) }}</span>
+          </span>
         </span>
         <span class="brand__text">
           <span class="brand__name">{{ site.name }}</span>
@@ -137,53 +193,58 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 
-/* 两张叠在一起的小牌，悬停时扇开 */
+/* 颜文字字标：进来笑、离开不舍；五格等宽，换脸不推动标题 */
 .mark {
-  position: relative;
-  width: 30px;
-  height: 34px;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
+  height: 34px;
+  padding-inline: 2px;
   transition: transform var(--dur-base) var(--ease-spring);
 }
 .brand:hover .mark {
-  transform: rotate(-4deg) scale(1.04);
+  transform: rotate(-4deg) scale(1.03);
 }
 
-.mark__card {
-  position: absolute;
-  top: 4px;
-  left: 6px;
-  width: 19px;
-  height: 26px;
-  border-radius: 5px;
-  border: 1px solid var(--line-strong);
-  transition: transform var(--dur-base) var(--ease-spring), border-color var(--dur-base) var(--ease-out);
+.face {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: 0.98rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--text);
+  animation: faceIn 300ms var(--ease-spring) both;
 }
-.mark__card--back {
-  transform: rotate(-13deg) translate(-3px, 1px);
-  background: var(--surface-strong);
+
+.face__hand {
+  display: inline-block;
+  transform-origin: 50% 85%;
 }
-.mark__card--front {
-  transform: rotate(6deg);
-  background: var(--accent-grad);
-  border-color: transparent;
-  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.7);
+.brand:hover .face__hand,
+.brand:focus-visible .face__hand {
+  animation: faceWave 900ms var(--ease-in-out) 1;
 }
-.mark__card--front::after {
-  content: '';
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.72);
+
+@keyframes faceIn {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.9);
+  }
 }
-.brand:hover .mark__card--back {
-  transform: rotate(-26deg) translate(-6px, 2px);
-}
-.brand:hover .mark__card--front {
-  transform: rotate(15deg) translateX(2px);
+
+@keyframes faceWave {
+  0%,
+  100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  30% {
+    transform: rotate(14deg) translateY(-1px);
+  }
+  60% {
+    transform: rotate(-8deg) translateY(1px);
+  }
 }
 
 .brand__text {
@@ -193,9 +254,12 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .brand__name {
-  font-size: 1.02rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  /* 花体数学字母（𝓫𝓮𝓲𝔂𝓾𝓮）优先用带该字符集的字体，避免落到方块 */
+  font-family: 'Cambria Math', 'STIX Two Math', 'Noto Sans Math', 'Segoe UI Symbol',
+    'Apple Symbols', var(--font-sans);
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 .brand__sub {
@@ -266,6 +330,15 @@ onBeforeUnmount(() => {
 @media (max-width: 420px) {
   .brand__sub {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .face,
+  .face__hand,
+  .mark {
+    animation: none;
+    transition: none;
   }
 }
 </style>

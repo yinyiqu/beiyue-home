@@ -33,17 +33,6 @@ const showIcon = computed(() => Boolean(props.app.icon) && iconOk.value)
 const showEmoji = computed(() => !showIcon.value && Boolean(props.app.emoji))
 const initial = computed(() => props.app.name.slice(0, 1))
 
-/** 左缘竖排的地址：域名 + 路径，去掉协议头与末尾斜杠 */
-const address = computed(() => {
-  if (!props.app.url) return 'url not set'
-  try {
-    const { hostname, pathname, search, hash } = new URL(props.app.url, document.baseURI)
-    return `${hostname.replace(/^www\./, '')}${pathname}${search}${hash}`.replace(/\/+$/, '')
-  } catch (e) {
-    return props.app.url
-  }
-})
-
 /** 奇偶微微交错，像被随手码好的一叠牌；底牌端正摆放 */
 const style = computed(() => {
   const stagger = props.isLast ? 0 : props.index % 2 === 0 ? -1 : 1
@@ -90,9 +79,6 @@ const style = computed(() => {
           <span v-else class="card__initial">{{ initial }}</span>
         </span>
       </span>
-
-      <!-- 左缘竖排地址：牌向左抽出时，这一条始终在视野里 -->
-      <span class="card__spine" aria-hidden="true">{{ address }}</span>
     </span>
   </a>
 </template>
